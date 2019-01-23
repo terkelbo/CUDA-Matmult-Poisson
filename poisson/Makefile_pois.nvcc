@@ -1,4 +1,6 @@
 TARGET_GPU1	= poisson_gpu1
+TARGET_GPU2	= poisson_gpu2
+TARGET_GPU3	= poisson_gpu3
 TARGET_CPU	= poisson_CPU
 
 SRC_DIR = src
@@ -29,11 +31,17 @@ LIBS	= -lcublas -lcurand
 CUDA_PATH ?= /appl/cuda/10.0
 INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc
 
-all: $(TARGET_GPU1) $(TARGET_CPU)
+all: $(TARGET_GPU1) $(TARGET_CPU) $(TARGET_GPU2) $(TARGET_GPU3)
 
 $(TARGET_GPU1): $(OBJ_DIR)/main_gpu1.o  $(OBJ_DIR)/jacobi_gpu1.o $(OBJ_DIR)/inittools_gpu1.o
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_DIR)/main_gpu1.o  $(OBJ_DIR)/jacobi_gpu1.o $(OBJ_DIR)/inittools_gpu1.o $(LIBS)
 
+$(TARGET_GPU2): $(OBJ_DIR)/main_gpu2.o  $(OBJ_DIR)/jacobi_gpu2.o $(OBJ_DIR)/inittools_gpu2.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_DIR)/main_gpu2.o  $(OBJ_DIR)/jacobi_gpu2.o $(OBJ_DIR)/inittools_gpu2.o $(LIBS)
+
+$(TARGET_GPU3): $(OBJ_DIR)/main_gpu3.o  $(OBJ_DIR)/jacobi_gpu3.o $(OBJ_DIR)/inittools_gpu3.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_DIR)/main_gpu3.o  $(OBJ_DIR)/jacobi_gpu3.o $(OBJ_DIR)/inittools_gpu3.o $(LIBS)
+	
 $(TARGET_CPU): $(OBJ_DIR)/main_cpu.o  $(OBJ_DIR)/jacobi_openmp1.o $(OBJ_DIR)/inittools_ccnuma.o
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_DIR)/main_cpu.o  $(OBJ_DIR)/jacobi_openmp1.o $(OBJ_DIR)/inittools_ccnuma.o $(LIBS)
 
@@ -48,16 +56,34 @@ clean:
 
 realclean: clean
 	@rm -f $(TARGET_GPU1)
+	@rm -f $(TARGET_GPU2)
+	@rm -f $(TARGET_GPU3)
 	@rm -f $(TARGET_CPU)
 
 # dependencies
 #
+
+$(OBJ_DIR)/main_gpu3.o  : $(SRC_DIR)/main_gpu3.cu include/jacobi_gpu3.h include/inittools_gpu3.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/jacobi_gpu3.o: $(SRC_DIR)/jacobi_gpu3.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/inittools_gpu3.o: $(SRC_DIR)/inittools_gpu3.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJ_DIR)/main_gpu2.o  : $(SRC_DIR)/main_gpu2.cu include/jacobi_gpu2.h include/inittools_gpu2.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/jacobi_gpu2.o: $(SRC_DIR)/jacobi_gpu2.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/inittools_gpu2.o: $(SRC_DIR)/inittools_gpu2.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+
 $(OBJ_DIR)/main_gpu1.o  : $(SRC_DIR)/main_gpu1.cu include/jacobi_gpu1.h include/inittools_gpu1.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
 $(OBJ_DIR)/jacobi_gpu1.o: $(SRC_DIR)/jacobi_gpu1.cu 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
 $(OBJ_DIR)/inittools_gpu1.o: $(SRC_DIR)/inittools_gpu1.cu 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+
 $(OBJ_DIR)/main_cpu.o  : $(SRC_DIR)/main_cpu.cu include/jacobi.h include/inittools.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
 $(OBJ_DIR)/jacobi_openmp1.o: $(SRC_DIR)/jacobi_openmp1.cu 
