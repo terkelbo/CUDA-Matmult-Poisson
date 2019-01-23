@@ -31,12 +31,12 @@ __global__ void matmult_gpu1Kernel(int m, int n, int k, double * d_A, double * d
 	
 	for(i=0;i < m; i++){
 		for(j=0;j<n;j++){
-			d_C[i*m + j]=0;
+			d_C[i*n + j]=0;
 		}
 		for(l=0;l < k;l++){
-			x = d_A[i*m + l];
+			x = d_A[i*k + l];
 			for(j=0;j < n; j++){
-				d_C[i*m + j] += x * d_B[l*k + j];
+				d_C[i*n + j] += x * d_B[l*n + j];
 			}
 		}
 	}
