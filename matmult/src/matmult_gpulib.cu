@@ -22,12 +22,12 @@ void matmult_gpulib(int m, int n, int k, double * A, double * B, double * C){
 
 	cublasDgemm(handle,
                CUBLAS_OP_N, CUBLAS_OP_N,
-               m, n, k,
+               n, m, k,
                alpha,
-               d_A, m,
-               d_B, k,
+               d_B, n,
+               d_A, k,
                beta,
-               d_C, m);
+               d_C, n);
 
     cudaMemcpy(C, d_C, m * n * sizeof(double *), cudaMemcpyDeviceToHost);
 
