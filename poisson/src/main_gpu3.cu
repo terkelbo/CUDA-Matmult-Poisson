@@ -3,8 +3,8 @@
 #include <string.h>
 #include <math.h>
 
-#include "inittools_gpu2.h"
-#include "jacobi_gpu2.h"
+#include "inittools_gpu3.h"
+#include "jacobi_gpu3.h"
 #include <omp.h>
 #include <helper_cuda.h>
 #include <cuda.h>
@@ -21,7 +21,8 @@ main( int argc, char *argv[] ){
 	double memory, te, mflops;
 	double * h_u_old, * h_u_new, * h_f, * h_temp;
 	double * sol;
-	double * d_u_old, * d_u_new, * d_f, * d_temp;
+	double * d0_u_old, * d0_u_new, * d0_f, * d0_temp;
+	double * d1_u_old, * d1_u_new, * d1_f, * d1_temp;
 	
 	algo = "jacobi";
 	if(argc >= 2){
@@ -82,36 +83,53 @@ main( int argc, char *argv[] ){
 	cudaMalloc((void **)&dummy,0);
 	     
 	te = omp_get_wtime();
-	cudaMalloc((void **)&d_u_old,  (n + 2)*(n + 2)* sizeof(double *));
-	cudaMalloc((void **)&d_u_new,  (n + 2)*(n + 2)* sizeof(double *));
-	cudaMalloc((void **)&d_f,  (n + 2)*(n + 2)* sizeof(double *));
-	cudaMalloc((void **)&d_temp,  (n + 2)*(n + 2)* sizeof(double *));
+		
+	cudaSetDevice(0);
+	cudaDeviceEnablePeerAccess(1, 0);
+	cudaMalloc((void **)&d0_u_old,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMalloc((void **)&d0_u_new,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMalloc((void **)&d0_f,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMalloc((void **)&d0_temp,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMemcpy(d0_u_new, h_u_new, (n + 2)*(n + 2)* sizeof(double *)/2, cudaMemcpyHostToDevice);
+	cudaMemcpy(d0_u_old, h_u_old, (n + 2)*(n + 2)* sizeof(double *)/2, cudaMemcpyHostToDevice);
+	cudaMemcpy(d0_f, h_f, (n + 2)*(n + 2)* sizeof(double *)/2, cudaMemcpyHostToDevice);
 	
-	/* Start the time loop */
-	cudaMemcpy(d_u_new, h_u_new, (n + 2)*(n + 2)* sizeof(double *), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_u_old, h_u_old, (n + 2)*(n + 2)* sizeof(double *), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_f, h_f, (n + 2)*(n + 2)* sizeof(double *), cudaMemcpyHostToDevice);
-	//cudaMemcpy(d_temp, h_temp, (n + 2)*(n + 2)* sizeof(double *), cudaMemcpyHostToDevice);
-
+	cudaSetDevice(1);
+	cudaDeviceEnablePeerAccess(0, 0);
+	cudaMalloc((void **)&d1_u_old,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMalloc((void **)&d1_u_new,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMalloc((void **)&d1_f,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMalloc((void **)&d1_temp,  (n + 2)*(n + 2)* sizeof(double *)/2);
+	cudaMemcpy(d1_u_new, h_u_new+(n+2)/2, (n + 2)*(n + 2)* sizeof(double *)/2, cudaMemcpyHostToDevice);
+	cudaMemcpy(d1_u_old, h_u_old+(n+2)/2, (n + 2)*(n + 2)* sizeof(double *)/2, cudaMemcpyHostToDevice);
+	cudaMemcpy(d1_f, h_f+(n+2)/2, (n + 2)*(n + 2)* sizeof(double *)/2, cudaMemcpyHostToDevice);
+	
 	// Kernel launch
-	dim3 dimGrid((int)ceil(((double)(n+2))/16),(int)ceil(((double)(n+2))/16),1);
+	dim3 dimGrid((int)ceil(((double)(n+2))/(16*2)),(int)ceil(((double)(n+2))/(16*2)),1);
 	dim3 dimBlock(16,16,1);
 	
 	for(k = 0; k < max_it; k++){
 		
+		cudaSetDevice(0);
+		jacobi_kernel1<<<dimGrid,dimBlock>>>(n, h, d0_u_old, d0_u_new, d0_f, d1_u_old, d1_u_new);		
 		
-		jacobi<<<dimGrid,dimBlock>>>(n, h, d_u_old, d_u_new, d_f);
+		cudaSetDevice(1);
+		jacobi_kernel2<<<dimGrid,dimBlock>>>(n, h, d1_u_old, d1_u_new, d1_f, d0_u_old, d0_u_new);
 		cudaDeviceSynchronize();		
-	
-		
+
 		//now that the values are updated we copy new values into the old array
 		if(strcmp(algo,"jacobi")==0){
-			d_temp = d_u_old;
-			d_u_old = d_u_new;
-			d_u_new = d_temp;	
+			d0_temp = d0_u_old;
+			d0_u_old = d0_u_new;
+			d0_u_new = d0_temp;	
+			d1_temp = d1_u_old;
+			d1_u_old = d1_u_new;
+			d1_u_new = d1_temp;	
 			}		
 	}
-	cudaMemcpy(h_u_new, d_u_new, (n+2)*(n+2)*sizeof(double *), cudaMemcpyDeviceToHost);
+	
+	cudaMemcpy(h_u_new, d0_u_new, (n+2)*(n+2)*sizeof(double *)/2, cudaMemcpyDeviceToHost);
+	cudaMemcpy(h_u_new+(n+2)/2, d1_u_new, (n+2)*(n+2)*sizeof(double *)/2, cudaMemcpyDeviceToHost);
 	
 	
 	te = omp_get_wtime() - te;
@@ -127,9 +145,12 @@ main( int argc, char *argv[] ){
 	   max_it, memory, mflops, te);
 
 	if(strcmp(algo,"jacobi")==0){
-		cudaFree(d_u_old);
-		cudaFree(d_f);
-		cudaFree(d_u_new);
+		cudaFree(d0_u_old);
+		cudaFree(d0_f);
+		cudaFree(d0_u_new);
+		cudaFree(d1_u_old);
+		cudaFree(d1_f);
+		cudaFree(d1_u_new);
 	}
 	cudaFreeHost(h_f);
 	cudaFreeHost(h_u_new);

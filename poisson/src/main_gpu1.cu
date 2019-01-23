@@ -47,14 +47,11 @@ main( int argc, char *argv[] ){
 
 	/* Allocate memory for all arrays */
 	if(strcmp(algo,"jacobi")==0){
-		//u_old = malloc_2d((n + 2)* sizeof(double *), (n + 2)* sizeof(double *));
-		h_u_old = (double *) malloc((n + 2)*(n + 2)* sizeof(double *));
+		cudaMallocHost((void **)&h_u_old,(n + 2)*(n + 2)* sizeof(double *));
 	}
-	//u_new = malloc_2d((n + 2)* sizeof(double *), (n + 2)* sizeof(double *)); 
-	//f = malloc_2d((n + 2)* sizeof(double *), (n + 2)* sizeof(double *));
 	
-	h_u_new = (double *) malloc((n + 2)*(n + 2)* sizeof(double *));
-	h_f = (double *) malloc((n + 2)*(n + 2)* sizeof(double *));
+	cudaMallocHost((void **)&h_f,(n + 2)*(n + 2)* sizeof(double *));
+	cudaMallocHost((void **)&h_u_new,(n + 2)*(n + 2)* sizeof(double *));
 	
 	if(strcmp(algo,"jacobi")==0){
 		if (h_u_old == NULL  || h_u_new == NULL | h_f == NULL) {
@@ -81,12 +78,15 @@ main( int argc, char *argv[] ){
 		init_f(n, h, h_f);
 	}
 	
+	double * dummy;
+	cudaMalloc((void **)&dummy,0);
+	
+	te = omp_get_wtime();
 	cudaMalloc((void **)&d_u_old,  (n + 2)*(n + 2)* sizeof(double *));
 	cudaMalloc((void **)&d_u_new,  (n + 2)*(n + 2)* sizeof(double *));
 	cudaMalloc((void **)&d_f,  (n + 2)*(n + 2)* sizeof(double *));
 	cudaMalloc((void **)&d_temp,  (n + 2)*(n + 2)* sizeof(double *));
 	
-	te = omp_get_wtime();	
 	/* Start the time loop */
 	cudaMemcpy(d_u_new, h_u_new, (n + 2)*(n + 2)* sizeof(double *), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_u_old, h_u_old, (n + 2)*(n + 2)* sizeof(double *), cudaMemcpyHostToDevice);
@@ -126,7 +126,6 @@ main( int argc, char *argv[] ){
 		cudaFree(d_u_old);
 		cudaFree(d_f);
 		cudaFree(d_u_new);
-		cudaFree(d_temp);
 	}
 	cudaFreeHost(h_f);
 	cudaFreeHost(h_u_new);
