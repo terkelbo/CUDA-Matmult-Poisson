@@ -1,0 +1,44 @@
+TARGET	= poisson_gpu1
+OBJS	= main_pois1.o jacobi_gpu1.o inittools_naive.o
+
+OPT	= -g -O3
+ISA	= 
+PARA	= -fopenmp
+
+XOPTS = -Xptxas=-v -arch=sm_70 -lineinfo
+
+CC	= gcc
+
+CCC	= nvcc
+CXX	= nvcc
+CXXFLAGS= --compiler-options "$(OPT) $(PARA)" $(XOPTS)
+
+CFLAGS	= $(OPT) $(ISA) $(PARA) $(XOPT)
+
+F90C  	= gfortran
+LIBS	= -lcublas -lcurand
+
+CUDA_PATH ?= /appl/cuda/10.0
+INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc -I.
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS) 
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
+
+
+.SUFFIXES: .cu
+.cu.o:
+	$(CXX) -o $*.o -c $*.cu $(CXXFLAGS) $(SOFLAGS) $(INCLUDES)
+
+clean:
+	@/bin/rm -f *.o core
+
+realclean: clean
+	@rm -f $(TARGET)
+
+# dependencies
+#
+main_pois1.o  : main_pois1.cu jacobi_gpu1.h inittools_naive.h
+jacobi_gpu1.o: jacobi_gpu1.cu
+inittools_naive.o: inittools_naive.cu
