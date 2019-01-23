@@ -30,15 +30,15 @@ void matmult_gpu2(int m, int n, int k, double * A, double * B, double * C){
 __global__ void matmult_gpu2Kernel(int m, int n, int k, double * d_A, double * d_B, double * d_C){
 
     int i, j, l;
-
+    double C = 0;
     i = blockIdx.x * blockDim.x + threadIdx.x;
     j = blockIdx.y * blockDim.y + threadIdx.y;
 	
-	if(i < n && j < m){
-		d_C[i*m + j]=0;
+	if(i < m && j < n){
 		for(l=0;l < k;l++){
-			d_C[i*m + j] += d_A[i*m + l] * d_B[l*k + j];
+			C += d_A[i*k + l] * d_B[l*n + j];
 		}
+		d_C[i*n + j] = C;
 	}
 
 }
