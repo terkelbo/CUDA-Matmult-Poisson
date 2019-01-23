@@ -1,5 +1,5 @@
-#ifndef __INITTOOLS_NAIVE_H
-#define __INITTOOLS_NAIVE_H
+#ifndef __INITTOOLS_GPU1_H
+#define __INITTOOLS_GPU1_H
 
 void init_u(int n, char * algo, double u_start, double * u_old, double * u_new);
 

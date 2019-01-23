@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "inittools_naive.h"
+#include "inittools_gpu1.h"
 #include "jacobi_gpu1.h"
 #include <omp.h>
 #include <helper_cuda.h>
@@ -111,7 +111,7 @@ main( int argc, char *argv[] ){
 	
 	
 	te = omp_get_wtime() - te;
-	mflops   = 1.0e-06*n*n*max_it/te; // missing chechk_flops
+	mflops   = 1.0e-06*CHECK_FLOP*n*n*max_it/te;
 	memory = (double)(8.0*n*n)/1000; // in Kbytes
 
 	if(strcmp(test,"test")==0){

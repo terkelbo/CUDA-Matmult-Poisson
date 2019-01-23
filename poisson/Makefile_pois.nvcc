@@ -1,5 +1,13 @@
-TARGET	= poisson_gpu1
-OBJS	= main_pois1.o jacobi_gpu1.o inittools_naive.o
+TARGET_GPU1	= poisson_gpu1
+TARGET_CPU	= poisson_CPU
+
+SRC_DIR = src
+OBJ_DIR = obj
+
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+CPPFLAGS = -Iinclude
 
 OPT	= -g -O3
 ISA	= 
@@ -19,26 +27,40 @@ F90C  	= gfortran
 LIBS	= -lcublas -lcurand
 
 CUDA_PATH ?= /appl/cuda/10.0
-INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc -I.
+INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc
 
-all: $(TARGET)
+all: $(TARGET_GPU1) $(TARGET_CPU)
 
-$(TARGET): $(OBJS) 
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
+$(TARGET_GPU1): $(OBJ_DIR)/main_gpu1.o  $(OBJ_DIR)/jacobi_gpu1.o $(OBJ_DIR)/inittools_gpu1.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_DIR)/main_gpu1.o  $(OBJ_DIR)/jacobi_gpu1.o $(OBJ_DIR)/inittools_gpu1.o $(LIBS)
 
+$(TARGET_CPU): $(OBJ_DIR)/main_cpu.o  $(OBJ_DIR)/jacobi_openmp1.o $(OBJ_DIR)/inittools_ccnuma.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_DIR)/main_cpu.o  $(OBJ_DIR)/jacobi_openmp1.o $(OBJ_DIR)/inittools_ccnuma.o $(LIBS)
+
+	
 
 .SUFFIXES: .cu
-.cu.o:
-	$(CXX) -o $*.o -c $*.cu $(CXXFLAGS) $(SOFLAGS) $(INCLUDES)
+#.cu.o:
+#	$(CXX) -o $*.o -c $*.cu $(CXXFLAGS) $(SOFLAGS) $(INCLUDES)
 
 clean:
-	@/bin/rm -f *.o core
+	@/bin/rm -f core core.* $(OBJ_DIR)/*.o
 
 realclean: clean
-	@rm -f $(TARGET)
+	@rm -f $(TARGET_GPU1)
+	@rm -f $(TARGET_CPU)
 
 # dependencies
 #
-main_pois1.o  : main_pois1.cu jacobi_gpu1.h inittools_naive.h
-jacobi_gpu1.o: jacobi_gpu1.cu
-inittools_naive.o: inittools_naive.cu
+$(OBJ_DIR)/main_gpu1.o  : $(SRC_DIR)/main_gpu1.cu include/jacobi_gpu1.h include/inittools_gpu1.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/jacobi_gpu1.o: $(SRC_DIR)/jacobi_gpu1.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/inittools_gpu1.o: $(SRC_DIR)/inittools_gpu1.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/main_cpu.o  : $(SRC_DIR)/main_cpu.cu include/jacobi.h include/inittools.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/jacobi_openmp1.o: $(SRC_DIR)/jacobi_openmp1.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJ_DIR)/inittools_ccnuma.o: $(SRC_DIR)/inittools_ccnuma.cu 
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) -c $< -o $@
