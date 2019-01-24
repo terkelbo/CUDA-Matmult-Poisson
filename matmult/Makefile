@@ -10,7 +10,7 @@ OPT	= -g -O3
 PIC = -fpic
 OMP   = -fopenmp
 XPIC  = -Xcompiler -fpic
-XOPT  = -Xptxas=-v # use -lineinfo for profiler, use -G for debugging
+XOPT  = -Xptxas=-v #-lineinfo #for profiler, use -G for debugging
 XARCH = -arch=sm_70
 
 CXX	= nvcc
