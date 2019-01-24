@@ -18,7 +18,7 @@ main( int argc, char *argv[] ){
 	int i, j, n, k, max_it = 5000;
 	char * algo, * test;
 	double u_start = 0.0, d = 100000.0, threshold = 0.001;
-	double memory, te, mflops;
+	double memory, te, mflops, bandwidth;
 	double * h_u_old, * h_u_new, * h_f, * h_temp;
 	double * sol;
 	double * d_u_old, * d_u_new, * d_f, * d_temp;
@@ -113,14 +113,15 @@ main( int argc, char *argv[] ){
 	te = omp_get_wtime() - te;
 	mflops   = 1.0e-06*CHECK_FLOP*n*n*max_it/te;
 	memory = (double)(8.0*n*n)/1000; // in Kbytes
+	bandwidth = 1.0e-06*n*n*8*3*max_it/te;
 
 	if(strcmp(test,"test")==0){
 		d = euclidian_norm(n, sol, h_u_new);
 		printf("Mean euclidian norm between sol and approximation is %f \n", d/(n*n));
 	}
-
-	printf("%10.2li %10.2lf %le %le\n", 
-	   max_it, memory, mflops, te);
+	
+	printf("%10.2li %10.2lf %.3f %.3f %.3f\n", 
+	   max_it, memory, mflops, te, bandwidth);
 
 	if(strcmp(algo,"jacobi")==0){
 		cudaFree(d_u_old);

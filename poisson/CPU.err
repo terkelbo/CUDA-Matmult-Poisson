@@ -1,0 +1,2 @@
+cuda/10.0 is already loaded.
+Another version of gcc is loaded. Use "module swap gcc/7.3.0" instead.

@@ -22,7 +22,7 @@ IMPLEMENTATIONS="poisson_gpu1"
 rm -f data/statfun_$IMPLEMENTATIONS.dat
 echo "Making data file containing stats - see data/statfun_$IMPLEMENTATIONS.dat"
 
-do 
+ 
 for rows in $N
 	do
 	echo "./$IMPLEMENTATIONS $rows"
