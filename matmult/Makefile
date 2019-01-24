@@ -16,7 +16,7 @@ XARCH = -arch=sm_70
 CXX	= nvcc
 CXXFLAGS = --compiler-options "$(OPT) $(PIC) $(OMP)" $(XARCH) $(XOPT) $(XPIC)
 
-CUDA_PATH ?= /appl/cuda/9.1
+CUDA_PATH ?= /appl/cuda/10.0
 INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc 
 
 SOFLAGS = -shared
