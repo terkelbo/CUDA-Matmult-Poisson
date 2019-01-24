@@ -1,0 +1,10 @@
+     2.344      2.175 # matmult_gpulib 10
+    58.594    257.993 # matmult_gpulib 50
+   234.375   1535.693 # matmult_gpulib 100
+  5859.375  97685.852 # matmult_gpulib 500
+ 23437.500 441315.297 # matmult_gpulib 1000
+ 52734.375 770348.394 # matmult_gpulib 1500
+ 93750.000 1109857.166 # matmult_gpulib 2000
+375000.000 2095293.062 # matmult_gpulib 4000
+843750.000 2783410.709 # matmult_gpulib 6000
+1500000.000 3303249.980 # matmult_gpulib 8000
