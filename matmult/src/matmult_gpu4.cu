@@ -1,6 +1,6 @@
 #include <cuda_runtime.h>
 
-#define REGISTER_BLOCKING 24
+#define REGISTER_BLOCKING 64
 
 __global__ void matmult_gpu4Kernel(int m, int n, int k, double * d_A, double * d_B, double * d_C);
 
@@ -19,7 +19,7 @@ void matmult_gpu4(int m, int n, int k, double * A, double * B, double * C){
 
 	//kernel block and grid size
     dim3 dimBlock(16,16,1);
-    dim3 dimGrid((int)ceil(((double)m)/16), (int)ceil(((double)n)/(16*REGISTER_BLOCKING)));  
+    dim3 dimGrid((int)ceil(((double)n)/(16*REGISTER_BLOCKING)), (int)ceil(((double)m)/(16)));  
 
     matmult_gpu4Kernel<<<dimGrid,dimBlock>>>(m, n, k, d_A, d_B, d_C);
 
@@ -35,8 +35,8 @@ __global__ void matmult_gpu4Kernel(int m, int n, int k, double * d_A, double * d
 
     int i, j, l, e;
 
-    i = blockIdx.x * blockDim.x + threadIdx.x;
-    j = REGISTER_BLOCKING*(blockIdx.y * blockDim.y + threadIdx.y);
+    i = blockIdx.y * blockDim.y + threadIdx.y;
+    j = REGISTER_BLOCKING*(blockIdx.x * blockDim.x + threadIdx.x);
 	
 	double C_reg[REGISTER_BLOCKING] = {0}; 
 
@@ -56,8 +56,8 @@ __global__ void matmult_gpu4Kernel(int m, int n, int k, double * d_A, double * d
 	}
 
 }
-*/
 
+*/
 
 // REGISTER BLOCKING ALONG THE COLUMNS OF C
 extern "C" {
@@ -89,8 +89,8 @@ __global__ void matmult_gpu4Kernel(int m, int n, int k, double * d_A, double * d
 
     int i, j, l, e;
 
-    j = (blockIdx.x * blockDim.x + threadIdx.x);
     i = REGISTER_BLOCKING*(blockIdx.y * blockDim.y + threadIdx.y);
+    j = (blockIdx.x * blockDim.x + threadIdx.x);
 	
 	double C_reg[REGISTER_BLOCKING] = {0}; 
 

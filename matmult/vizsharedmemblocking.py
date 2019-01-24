@@ -23,7 +23,7 @@ df_comb = df1
 plt.figure()
 df_comb.set_index("Block Size", inplace=True)
 ax = df_comb.groupby("Size")["MFlops"].plot(legend=True, style ='*-')
-plt.legend(loc='lower right')
+plt.legend(loc='upper left')
 plt.xlabel('Block Size')
 plt.ylabel('MFlops')
 plt.gca().set_ylim(bottom=0)

@@ -21,15 +21,15 @@ df1 = pd.read_csv('./data/registerblocking.dat',delim_whitespace=True,header=Non
 df2 = pd.read_csv('./data/registerblocking_down.dat',delim_whitespace=True,header=None,
                   names=['Register Size','Memory','MFlops','hash','function']).drop(['hash','function'],axis=1)
 
-df1['Blocking Direction'] = 'Along rows'
-df2['Blocking Direction'] = 'Along columns'
+df1['Blocking Direction'] = 'Along rows of C'
+df2['Blocking Direction'] = 'Along columns of C'
 
 df_comb = pd.concat((df1,df2))
 
 plt.figure()
 df_comb.set_index("Register Size", inplace=True)
 ax = df_comb.groupby("Blocking Direction")["MFlops"].plot(legend=True, style ='*-')
-plt.legend(loc='upper left')
+plt.legend(loc='upper right')
 plt.xlabel('Register Size')
 plt.ylabel('MFlops')
 plt.gca().set_ylim(bottom=0)
