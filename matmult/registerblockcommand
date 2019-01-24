@@ -1,0 +1,1 @@
+make clean && make && output=$(MATMULT_COMPARE=0 ./matmult_f.nvcc gpu4 10000 10000 10000) && echo "64 $output" >> data/registerblocking.dat
