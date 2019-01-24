@@ -90,7 +90,7 @@ df4['CPU/GPU3'] = df1['WallTime']/df4['WallTime']
 ax = df2["CPU/GPU1"].plot(legend=True, style ='*-')
 ax = df3["CPU/GPU2"].plot(legend=True, style ='*-')
 ax = df4["CPU/GPU3"].plot(legend=True, style ='*-')
-plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.legend(loc='upper left')
 plt.xlabel('Memory footprint (kbytes)')
 plt.ylabel('Speedup')
 plt.xscale('log',basex=2)

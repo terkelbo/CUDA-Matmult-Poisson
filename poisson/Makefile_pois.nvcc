@@ -15,7 +15,7 @@ OPT	= -g -O3
 ISA	= 
 PARA	= -fopenmp
 
-XOPTS = -Xptxas=-v -arch=sm_70 -lineinfo
+XOPTS = -Xptxas=-v -arch=sm_70
 
 CC	= gcc
 
