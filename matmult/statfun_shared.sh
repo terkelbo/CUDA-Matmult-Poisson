@@ -5,14 +5,14 @@
 #BSUB -J statfun
 #BSUB -n 1
 #BSUB -R "span[hosts=1]"
-#BSUB -R "rusage[mem=16GB]"
+#BSUB -R "rusage[mem=32GB]"
 #BSUB -W 01:00
 #BSUB -N
 #BSUB -oo statfun.out
 #BSUB -eo statfun.err
 
 
-func="gpu4"
+func="gpu5"
 N="10 50 100 500 1000 1500 2000 4000 6000 8000 10000 15000 20000 25000"
 
 rm -f ./data/statfun_$func.dat

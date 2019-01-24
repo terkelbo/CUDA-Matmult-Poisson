@@ -1,4 +1,6 @@
 #include <cuda_runtime.h>
+#include <omp.h>
+#include <stdio.h>
 
 __global__ void matmult_gpu2Kernel(int m, int n, int k, double * d_A, double * d_B, double * d_C);
 
@@ -31,8 +33,8 @@ __global__ void matmult_gpu2Kernel(int m, int n, int k, double * d_A, double * d
 
     int i, j, l;
     double C = 0;
-    i = blockIdx.x * blockDim.x + threadIdx.x;
-    j = blockIdx.y * blockDim.y + threadIdx.y;
+    j = blockIdx.x * blockDim.x + threadIdx.x;
+    i = blockIdx.y * blockDim.y + threadIdx.y;
 	
 	if(i < m && j < n){
 		for(l=0;l < k;l++){
