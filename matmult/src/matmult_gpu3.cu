@@ -19,7 +19,7 @@ void matmult_gpu3(int m, int n, int k, double * A, double * B, double * C){
     cudaMemcpy(d_B, B, k * n * sizeof(double *), cudaMemcpyHostToDevice);
 
 	//kernel block and grid size
-    dim3 dimBlock(BLOCK_SIZE,BLOCK_SIZE/REGISTER_BLOCKING,1);
+    dim3 dimBlock(BLOCK_SIZE/REGISTER_BLOCKING,BLOCK_SIZE,1);
     dim3 dimGrid((int)ceil(((double)m)/BLOCK_SIZE), (int)ceil(((double)n)/(BLOCK_SIZE)));  
 
     matmult_gpu3Kernel<<<dimGrid,dimBlock>>>(m, n, k, d_A, d_B, d_C);
@@ -36,8 +36,8 @@ __global__ void matmult_gpu3Kernel(int m, int n, int k, double * d_A, double * d
 
     int i, j, l, e;
 
-    i = blockIdx.x * blockDim.x + threadIdx.x;
-    j = REGISTER_BLOCKING*(blockIdx.y * blockDim.y + threadIdx.y);
+    i = blockIdx.y * blockDim.y + threadIdx.y;
+    j = REGISTER_BLOCKING*(blockIdx.x * blockDim.x + threadIdx.x);
 	
 	double C_reg[REGISTER_BLOCKING] = {0}; 
 
@@ -89,9 +89,9 @@ __global__ void matmult_gpu3Kernel(int m, int n, int k, double * d_A, double * d
 
     int i, j, l, e;
 
-    j = (blockIdx.x * blockDim.x + threadIdx.x);
     i = REGISTER_BLOCKING*(blockIdx.y * blockDim.y + threadIdx.y);
-
+    j = (blockIdx.x * blockDim.x + threadIdx.x);
+	
 	double C_reg[REGISTER_BLOCKING] = {0}; 
 
 	if(i < m && j < n){

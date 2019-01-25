@@ -19,7 +19,7 @@ void matmult_gpu4(int m, int n, int k, double * A, double * B, double * C){
     cudaMemcpy(d_B, B, k * n * sizeof(double *), cudaMemcpyHostToDevice);
 
 	//kernel block and grid size
-    dim3 dimBlock(BLOCK_SIZE,BLOCK_SIZE/2,1);
+    dim3 dimBlock(BLOCK_SIZE/REGISTER_BLOCKING,BLOCK_SIZE,1);
     dim3 dimGrid((int)ceil(((double)n)/(BLOCKSIZE)), (int)ceil(((double)m)/(BLOCKSIZE)));  
 
     matmult_gpu4Kernel<<<dimGrid,dimBlock>>>(m, n, k, d_A, d_B, d_C);
