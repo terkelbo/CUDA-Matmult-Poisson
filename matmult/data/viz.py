@@ -99,7 +99,7 @@ plt.xlabel('Memory Footprint (Mbyte)')
 plt.ylabel('Performance (Gflop/s)')
 #plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
-plt.yscale('log',basey=2)
+#plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
@@ -117,7 +117,7 @@ plt.xlabel('Memory Footprint (Mbyte)')
 plt.ylabel('Performance (Gflop/s)')
 #plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
-plt.yscale('log',basey=2)
+#plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
@@ -134,7 +134,7 @@ plt.xlabel('Memory Footprint (Mbyte)')
 plt.ylabel('Performance (Gflop/s)')
 #plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
-plt.yscale('log',basey=2)
+#plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
@@ -151,7 +151,7 @@ plt.xlabel('Memory Footprint (Mbyte)')
 plt.ylabel('Performance (Gflop/s)')
 #plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
-plt.yscale('log',basey=2)
+#plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
@@ -168,7 +168,7 @@ plt.xlabel('Memory Footprint (Mbyte)')
 plt.ylabel('Performance (Gflop/s)')
 #plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
-plt.yscale('log',basey=2)
+#plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
@@ -185,7 +185,7 @@ plt.xlabel('Memory Footprint (Mbyte)')
 plt.ylabel('Performance (Gflop/s)')
 #plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
-plt.yscale('log',basey=2)
+#plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
