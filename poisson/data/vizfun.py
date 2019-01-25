@@ -35,6 +35,7 @@ plt.xscale('log',basex=4)
 #plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 #ax.set_major_formatter(ScalarFormatter())
+ax.set_major_formatter(FormatStrFormatter('%.f'))
 ax = plt.gca().yaxis
 ax.set_major_formatter(ScalarFormatter())
 plt.savefig('MFlops.png', bbox_inches='tight')
@@ -54,6 +55,7 @@ plt.xscale('log',basex=4)
 #plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 #ax.set_major_formatter(ScalarFormatter())
+ax.set_major_formatter(FormatStrFormatter('%.f'))
 #ax = plt.gca().yaxis
 #ax.set_major_formatter(ScalarFormatter())
 plt.savefig('WallTime.png', bbox_inches='tight')
@@ -61,17 +63,22 @@ plt.close()
                                                              
 
 plt.figure()
+df1["Bandwidth"]=df1["Bandwidth"]/1000
+df2["Bandwidth"]=df2["Bandwidth"]/1000
+df3["Bandwidth"]=df3["Bandwidth"]/1000
+df4["Bandwidth"]=df4["Bandwidth"]/1000
 ax = df1["Bandwidth"].plot(legend=True, style ='*-')
 df2["Bandwidth"].plot(legend=True, style ='*-',ax=ax)
 df3["Bandwidth"].plot(legend=True, style ='*-',ax=ax)
 df4["Bandwidth"].plot(legend=True, style ='*-',ax=ax)
 plt.legend(["CPU","GPU1","GPU2","GPU3"],loc='upper left')
 plt.xlabel('Memory footprint (Kbytes)')
-plt.ylabel('Bandwidth (MB/s)')
+plt.ylabel('Bandwidth (GB/s)')
 #plt.gca().set_ylim(bottom=0)
-plt.xscale('log',basex=2)
+plt.xscale('log',basex=4)
 plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
+ax.set_major_formatter(FormatStrFormatter('%.f'))
 #ax.set_major_formatter(ScalarFormatter())
 ax = plt.gca().yaxis
 ax.set_major_formatter(ScalarFormatter())
@@ -93,10 +100,11 @@ ax = df4["CPU/GPU3"].plot(legend=True, style ='*-')
 plt.legend(loc='upper left')
 plt.xlabel('Memory footprint (kbytes)')
 plt.ylabel('Speedup')
-plt.xscale('log',basex=2)
+plt.xscale('log',basex=4)
 plt.yscale('log',basey=2)
 ax = plt.gca().xaxis
 #ax.set_major_formatter(ScalarFormatter())
+ax.set_major_formatter(FormatStrFormatter('%.f'))
 ax = plt.gca().yaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.savefig('Speedup.png', bbox_inches='tight')
