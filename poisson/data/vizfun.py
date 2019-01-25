@@ -19,6 +19,10 @@ df4 = pd.read_csv("statfun_poisson_gpu3.dat",delim_whitespace=True,header=None,n
 df4 = df4.loc[(df4['Size'] >= 10) & (df4['Size'] <= 10000)]
 
 plt.figure()
+df1["MFlops"]=df1["MFlops"]/1000
+df2["MFlops"]=df2["MFlops"]/1000
+df3["MFlops"]=df3["MFlops"]/1000
+df4["MFlops"]=df4["MFlops"]/1000
 df1.set_index("Memory", inplace=True)
 df2.set_index("Memory", inplace=True)
 df3.set_index("Memory", inplace=True)
@@ -29,7 +33,7 @@ df3["MFlops"].plot(legend=True, style ='*-',ax=ax)
 df4["MFlops"].plot(legend=True, style ='*-',ax=ax)
 plt.legend(["CPU","GPU1","GPU2","GPU3"],loc='upper left')
 plt.xlabel('Memory Footprint (Kbyte)')
-plt.ylabel('Performance (MFlops)')
+plt.ylabel('Performance (GFlops)')
 plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=4)
 #plt.yscale('log',basey=2)
