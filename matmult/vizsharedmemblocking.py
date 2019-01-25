@@ -19,13 +19,13 @@ mpl.rc('font', **font)
 df1 = pd.read_csv('./data/sharedmem_blocksize.dat',delim_whitespace=True,header=None,
                   names=['Block Size','Memory','MFlops','hash','function','Size']).drop(['hash','function'],axis=1)
 df_comb = df1
-
+df_comb['GFlops'] = df_comb['MFlops']/1000
 plt.figure()
 df_comb.set_index("Block Size", inplace=True)
-ax = df_comb.groupby("Size")["MFlops"].plot(legend=True, style ='*-')
+ax = df_comb.groupby("Size")["GFlops"].plot(legend=True, style ='*-')
 plt.legend(loc='upper left')
 plt.xlabel('Block Size')
-plt.ylabel('MFlops')
+plt.ylabel('GFlop/s')
 plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
 #plt.yscale('log',basey=2)

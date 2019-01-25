@@ -25,13 +25,15 @@ df1['Blocking Direction'] = 'Along rows of C'
 df2['Blocking Direction'] = 'Along columns of C'
 
 df_comb = pd.concat((df1,df2))
+df_comb['GFlops'] = df_comb['MFlops']/1000
 
 plt.figure()
 df_comb.set_index("Register Size", inplace=True)
-ax = df_comb.groupby("Blocking Direction")["MFlops"].plot(legend=True, style ='*-')
+ax = df_comb.groupby("Blocking Direction")["GFlops"].plot(legend=True, 
+style ='*-')
 plt.legend(loc='upper right')
-plt.xlabel('Register Size')
-plt.ylabel('MFlops')
+plt.xlabel('# of elements per thread')
+plt.ylabel('GFlop/s')
 plt.gca().set_ylim(bottom=0)
 plt.xscale('log',basex=2)
 #plt.yscale('log',basey=2)
