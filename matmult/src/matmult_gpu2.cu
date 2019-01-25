@@ -17,7 +17,7 @@ void matmult_gpu2(int m, int n, int k, double * A, double * B, double * C){
 
 	//kernel block and grid size
     dim3 dimBlock(16,16,1);
-    dim3 dimGrid((int)ceil(((double)m)/16), (int)ceil(((double)n)/16));  
+    dim3 dimGrid((int)ceil(((double)n)/16), (int)ceil(((double)m)/16));  
 
     matmult_gpu2Kernel<<<dimGrid,dimBlock>>>(m, n, k, d_A, d_B, d_C);
 

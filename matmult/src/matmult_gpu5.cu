@@ -1,7 +1,7 @@
 #include <cuda_runtime.h>
 
 // Thread block size
-#define BLOCK_SIZE 32
+#define BLOCK_SIZE 16
 
 // Matrices are stored in row-major order:
 // M(row, col) = *(M.elements + row * M.stride + col)
