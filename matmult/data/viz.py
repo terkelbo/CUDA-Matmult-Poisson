@@ -201,13 +201,13 @@ df3['GPU3/CPU'] = df3['Mflop/s']/df6['Mflop/s']
 df4['GPU4/CPU'] = df4['Mflop/s']/df6['Mflop/s']
 df5['GPU5/CPU'] = df5['Mflop/s']/df6['Mflop/s']
 df7['cublas/CPU'] = df7['Mflop/s']/df6['Mflop/s']
-ax = df1["GPU1/CPU"].plot(legend=True, style ='*-')
-ax = df2["GPU2/CPU"].plot(legend=True, style ='*-')
-ax = df3["GPU3/CPU"].plot(legend=True, style ='*-')
-ax = df4["GPU4/CPU"].plot(legend=True, style ='*-')
-ax = df5["GPU5/CPU"].plot(legend=True, style ='*-')
-ax = df7["cublas/CPU"].plot(legend=True, style ='*-')
-plt.legend(loc='lower right')
+ax = df1.plot(x='memory',y='GPU1/CPU',legend=True, style ='*-')
+df2.plot(x='memory',y='GPU2/CPU',legend=True, style ='*-',ax=ax)
+df3.plot(x='memory',y='GPU3/CPU',legend=True, style ='*-',ax=ax)
+df4.plot(x='memory',y='GPU4/CPU',legend=True, style ='*-',ax=ax)
+df5.plot(x='memory',y='GPU5/CPU',legend=True, style ='*-',ax=ax)
+df7.plot(x='memory',y='cublas/CPU',legend=True, style ='*-',ax=ax)
+plt.legend(['GPU1/CPU','GPU2/CPU','GPU3/CPU','GPU4/CPU','GPU5/CPU','cublas/CPU'],loc='lower right')
 plt.xlabel('Memory footprint (Mbytes)')
 plt.ylabel('Performance boost')
 plt.xscale('log',basex=2)
@@ -217,5 +217,6 @@ ax = plt.gca().xaxis
 ax.set_major_formatter(FormatStrFormatter('%.2f'))
 ax = plt.gca().yaxis
 ax.set_major_formatter(FormatStrFormatter('%.4f'))
+plt.xticks(rotation=45)
 plt.savefig('Mflops_speedup.png', bbox_inches='tight')
 plt.close()
