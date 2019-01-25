@@ -20,7 +20,7 @@ CUDA_PATH ?= /appl/cuda/10.0
 INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/common/inc 
 
 SOFLAGS = -shared
-XLIBS	= -lcublas -L /usr/lib64/atlas -ltatlas
+XLIBS	= -lcublas -lmkl_core
 
 $(TARGET): $(LIBOBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $(SOFLAGS) $(INCLUDES) $^ $(XLIBS)
