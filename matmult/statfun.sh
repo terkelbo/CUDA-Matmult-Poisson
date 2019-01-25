@@ -12,7 +12,7 @@
 #BSUB -eo statfun.err
 
 
-func="gpu4"
+func="gpulib"
 N="10 50 100 500 1000 1500 2000 4000 6000 8000 10000 15000 20000 25000"
 
 rm -f ./data/statfun_$func.dat

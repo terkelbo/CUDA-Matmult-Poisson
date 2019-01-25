@@ -1,19 +1,18 @@
 #!/bin/bash
 
 #BSUB -q hpcintro
-##BSUB -gpu "num=1:mode=exclusive_process:mps=yes"
 #BSUB -J statfun
 #BSUB -n 12
 #BSUB -R "span[hosts=1]"
-#BSUB -R "rusage[mem=16GB]"
-#BSUB -W 01:00
+#BSUB -R "rusage[mem=3GB]"
+#BSUB -W 02:00
 #BSUB -N
 #BSUB -oo statfun.out
 #BSUB -eo statfun.err
 
 
 func="lib"
-N="10 50 100 500 1000 1500 2000 4000 6000 8000"
+N="10 50 100 500 1000 1500 2000 4000 6000 8000 10000 15000 20000 25000"
 
 rm -f ./data/statfun_$func.dat
 for n in $N

@@ -1,6 +1,6 @@
 #include <cuda_runtime.h>
 
-#define REGISTER_BLOCKING 4
+#define REGISTER_BLOCKING 2
 
 __global__ void matmult_gpu3Kernel(int m, int n, int k, double * d_A, double * d_B, double * d_C);
 
