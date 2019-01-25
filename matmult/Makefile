@@ -9,7 +9,7 @@ LIBOBJS	= $(addprefix $(OBJ_DIR)/,$(addsuffix .o,$(notdir $(LIBSRCS))))
 OPT	= -g -O3
 PIC = -fpic
 OMP   = -fopenmp
-XPIC  = -Xcompiler -fpic
+XPIC  = -Xcompiler -fpic -maxrregcount=64
 XOPT  = -Xptxas=-v #-lineinfo #for profiler, use -G for debugging
 XARCH = -arch=sm_70
 
